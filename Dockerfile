@@ -1,5 +1,5 @@
-# Sử dụng Ubuntu 20.04 Slim làm base image
-FROM ubuntu:20.04
+# Sử dụng Debian Slim làm base image (nhẹ hơn Ubuntu)
+FROM debian:bullseye-slim
 
 # Cập nhật hệ thống và cài đặt các gói cần thiết
 RUN apt-get update -y && \
@@ -12,16 +12,18 @@ RUN apt-get update -y && \
     python3-pip \
     bash \
     bash-completion \
+    ca-certificates \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Cài đặt code-server từ script
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Cài đặt NVM nếu chưa có
+# Cài đặt NVM
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 # Cài đặt Node.js 22.9.0 và npm thông qua NVM
+# Đảm bảo source lại bashrc trong cùng một shell để NVM có hiệu lực
 RUN bash -c "source $HOME/.bashrc && nvm install 22.9.0 && nvm use 22.9.0"
 
 # Cập nhật npm lên phiên bản mới nhất
