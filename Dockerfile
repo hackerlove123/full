@@ -1,8 +1,9 @@
-# Sử dụng image Ubuntu làm base
+# Sử dụng Ubuntu làm base image
 FROM ubuntu:20.04
 
-# Cập nhật hệ thống và cài đặt các gói cần thiết
-RUN apt-get update && apt-get install -y \
+# Cập nhật và cài đặt các gói cần thiết (cùng cấu hình DNS để tránh lỗi mạng)
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf && \
+    apt-get update && apt-get install -y \
     lsof \
     curl \
     && rm -rf /var/lib/apt/lists/*
