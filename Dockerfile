@@ -1,5 +1,8 @@
-# Sử dụng Debian Slim làm base image (nhẹ hơn Ubuntu)
-FROM debian:bullseye-slim
+# Sử dụng Ubuntu bản nhẹ nhất làm base image
+FROM ubuntu:20.04
+
+# Thiết lập môi trường không tương tác để tránh yêu cầu input khi cài đặt gói
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Cập nhật hệ thống và cài đặt các gói cần thiết
 RUN apt-get update -y && \
