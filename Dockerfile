@@ -1,18 +1,20 @@
-# Sử dụng Alpine làm base image
-FROM alpine:latest
+# Sử dụng Debian Slim làm base image (nhẹ hơn Ubuntu)
+FROM debian:bullseye-slim
 
-# Cài đặt các gói cần thiết
-RUN apk update && \
-    apk add --no-cache \
-    bash \
+# Cập nhật hệ thống và cài đặt các gói cần thiết
+RUN apt-get update -y && \
+    apt-get install -y \
+    lsof \
     curl \
     git \
     tmux \
     htop \
-    python3 \
+    python3-pip \
+    bash \
     bash-completion \
     ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Cài đặt code-server từ script
 RUN curl -fsSL https://code-server.dev/install.sh | sh
@@ -21,6 +23,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 # Cài đặt Node.js 22.9.0 và npm thông qua NVM
+# Đảm bảo source lại bashrc trong cùng một shell để NVM có hiệu lực
 RUN bash -c "source $HOME/.bashrc && nvm install 22.9.0 && nvm use 22.9.0"
 
 # Cập nhật npm lên phiên bản mới nhất
