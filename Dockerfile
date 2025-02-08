@@ -34,4 +34,4 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | b
 EXPOSE 8080
 
 # Chạy code-server
-CMD ["bash", "-c", "source $HOME/.bashrc && code-server --bind-addr 0.0.0.0:8080 --auth none"]
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none"]
