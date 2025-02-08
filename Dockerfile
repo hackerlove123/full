@@ -1,37 +1,39 @@
-# Sử dụng Alpine để giảm nhẹ Docker image
-FROM alpine:latest
+# Sử dụng Ubuntu 20.04 Slim làm base image
+FROM ubuntu:20.04
 
-# Cài đặt các gói cần thiết
-RUN apk update && \
-    apk add --no-cache \
+# Cập nhật hệ thống và cài đặt các gói cần thiết
+RUN apt-get update -y && \
+    apt-get install -y \
     lsof \
     curl \
     git \
     tmux \
     htop \
-    python3 \
+    python3-pip \
     bash \
-    nodejs \
-    npm \
-    && rm -rf /var/cache/apk/*
+    bash-completion \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Cài đặt code-server từ script
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Cài đặt các thư viện npm: hpack, https, commander, colors, socks
-RUN npm install -g hpack https commander colors socks
-
 # Cài đặt NVM nếu chưa có
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
-# Tải lại cấu hình shell
-RUN echo 'source ~/.bashrc' >> ~/.bashrc
-
-# Cài đặt Node.js 22.9.0 và sử dụng nó
-RUN bash -c "source ~/.bashrc && nvm install 22.9.0 && nvm use 22.9.0"
+# Tải lại cấu hình shell cho NVM và cài đặt Node.js
+RUN echo 'source ~/.bashrc' >> ~/.bashrc && \
+    bash -c "source ~/.bashrc && nvm install 22.9.0 && nvm use 22.9.0"
 
 # Cập nhật npm lên phiên bản mới nhất
 RUN bash -c "source ~/.bashrc && npm install -g npm"
+
+# Sao chép toàn bộ nội dung của thư mục hiện tại vào trong container
+WORKDIR /app
+COPY . .
+
+# Cài đặt các thư viện npm: hpack, https, commander, colors, socks
+RUN bash -c "source ~/.bashrc && npm install -g hpack https commander colors socks"
 
 # Mở cổng 8080 cho code-server
 EXPOSE 8080
