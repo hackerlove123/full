@@ -4,6 +4,9 @@ FROM ubuntu:20.04
 # Thiết lập môi trường không tương tác để tránh yêu cầu input khi cài đặt gói
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Thêm DNS của Google để tránh lỗi kết nối
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
 # Cập nhật hệ thống và cài đặt các gói cần thiết
 RUN apt-get update -y && \
     apt-get install -y \
