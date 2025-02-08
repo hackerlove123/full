@@ -4,6 +4,7 @@ FROM ubuntu:20.04
 # Cập nhật hệ thống và cài đặt các gói cần thiết
 RUN apt-get update -y && \
     apt-get install -y \
+    curl \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
