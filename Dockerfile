@@ -22,21 +22,22 @@ RUN apt-get update -y && \
 # Cài đặt code-server từ script
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Cài đặt NVM
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-
-# Cài đặt Node.js 22.9.0 và npm thông qua NVM
-RUN bash -c "source $HOME/.bashrc && nvm install 22.9.0 && nvm use 22.9.0"
-
-# Cập nhật npm lên phiên bản mới nhất
-RUN bash -c "source $HOME/.bashrc && npm install -g npm"
+# Cài đặt NVM và Node.js
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
+    export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+    nvm install 22.9.0 && \
+    nvm use 22.9.0 && \
+    npm install -g npm
 
 # Sao chép toàn bộ nội dung của thư mục hiện tại vào trong container
 WORKDIR /app
 COPY . .
 
 # Cài đặt các thư viện npm cục bộ (local) thay vì toàn cục (global)
-RUN bash -c "source $HOME/.bashrc && npm install hpack https commander colors socks"
+RUN export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+    npm install hpack https commander colors socks
 
 # Mở cổng 8080 cho code-server
 EXPOSE 8080
